@@ -21,9 +21,8 @@
       ],
       "js": [
         "js/jquery-2.2.4.min.js",
-        "js/mousetrap.min.js",
         "js/toastr.min.js",
-        "js/screenfull.min.js",
+        "js/socket.io.js",
         "src/inject/index.js"
       ]
     }

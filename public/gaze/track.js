@@ -1,28 +1,55 @@
-var socket = io();
+function isInIframe () {
+  try {
+    return window.self !== window.top;
+  } catch (e) {
+    return true;
+  }
+}
+var inIframe = isInIframe()
 
-socket.on('connect', () => {
-  console.log('connected')
-  socket.emit('join room', '123');
-});
+function messageParent (msg) {
+  parent.postMessage(msg, '*')
+}
+
+var socket
+
+if(!inIframe) {
+  socket = io();
+
+  socket.on('connect', () => {
+    console.log('connected')
+    socket.emit('join room', '123');
+  });
+}
 
 
 //////set callbacks/////////
 GazeCloudAPI.OnCalibrationComplete = function(){
+  screenfull.exit()
+  messageParent('calibrationComplete')
   console.log('gaze Calibration Complete')
 }
 GazeCloudAPI.OnCamDenied = function() {
-  alert('camera access denied')
+  console.log('camera access denied')
 }
 GazeCloudAPI.OnError = console.error
 GazeCloudAPI.UseClickRecalibration = true;
 GazeCloudAPI.OnResult = function(GazeData) {
-  socket.emit('gaze', GazeData);
+  if(!inIframe) {
+    socket.emit('gaze', GazeData);
+  } else {
+    messageParent({ type: 'emit', args: ['gaze', GazeData] })
+  }
 }
 
 
 $(function() {
   $('#startid').click(start)
   $('#stopid').click(stop)
+  $('#exit').click(() => messageParent('exit'))
+  if(inIframe) {
+    $('#exit').show()
+  }
 })
 
 function start() {

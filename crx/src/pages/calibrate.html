@@ -1,0 +1,55 @@
+<!DOCTYPE HTML >
+<html>
+  <head>
+    <title>GazeCoder Calibration</title>
+
+    <script src="../../js/GazeCloudAPI.js" ></script>
+    <script src="../../js/jquery-2.2.4.min.js" ></script>
+    <script src="../../js/screenfull.min.js" ></script>
+    <script src="./calibrate.js"></script>
+  </head>
+  <body >
+
+    <div style="text-align: center;display: block" >
+
+
+      <h1>GazeCloud API </h1>
+      <h4>WebCam Online Eye-Tracking</h4>
+      <br>
+
+      <button  id = 'startid' class = 'buttonStartEyeTrack'  type="button">Start eye tracking</button>
+      <button  id = 'stopid'  style= 'display:none' class = 'buttonStartEyeTrack'   type="button">Stop</button>
+      <div  style='background-color: lightblue;'>
+        <p >
+        Real-Time Data:
+        <p id = "GazeData" > </p>
+        <p id = "HeadPhoseData" > </p>
+        <p id = "HeadRotData" > </p>
+        </p>
+      </div>
+
+      <div id ="gaze" style ='position: absolute;display:none;width: 100px;height: 100px;border-radius: 50%;border: solid 2px  rgba(255, 255,255, .2);	box-shadow: 0 0 100px 3px rgba(125, 125,125, .5);	pointer-events: none;	z-index: 999999'></div>
+
+
+        </label>
+
+        <br>
+        <br>
+        <br>
+
+        <p>With just a few lines of code, you can install our API into your website or app to start tracking your users eyes via WebCam.</p>
+        <a href = 'https://gazerecorder.com/gazecloudapi/'>Read More </a>
+
+
+        <br>
+        <br>
+        <hr>
+        <p>
+        You can also try <a href = 'https://app.gazerecorder.com'>GazeRecorder  App</a> . HTML Session Recording on any website
+        </p>
+
+
+
+    </div>
+  </body>
+</html>

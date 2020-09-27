@@ -1,0 +1,31 @@
+{
+  "name": "GazeCode",
+  "version": "0.1.0",
+  "manifest_version": 2,
+  "description": "Gaze Extension",
+  "homepage_url": "https://github.com/jiangts/eye-see-you",
+  "icons": {
+    "16": "icons/16.png",
+    "48": "icons/48.png",
+    "128": "icons/128.png"
+  },
+  "default_locale": "en",
+  "content_scripts": [
+    {
+      "matches": [
+        "<all_urls>"
+      ],
+      "css": [
+        "css/toastr.min.css",
+        "css/index.css"
+      ],
+      "js": [
+        "js/jquery-2.2.4.min.js",
+        "js/mousetrap.min.js",
+        "js/toastr.min.js",
+        "js/screenfull.min.js",
+        "src/inject/index.js"
+      ]
+    }
+  ]
+}

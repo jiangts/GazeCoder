@@ -43,50 +43,55 @@ function PlotGaze(GazeData) {
 
 }
 
+var DOMAIN = 'http://localhost:3000'
+
 var INJECTED = '__GAZECODER__'
+var FRAMEID = 'gazecoder-frame'
 
 if(!window[INJECTED]) {
   window[INJECTED] = true
   $(() => {
-    var DOMAIN = 'http://localhost:3000'
-    var FRAMEID = 'gazecoder-frame'
     var socket = io(DOMAIN);
 
     socket.on('connect', () => {
       console.log('connected')
-      socket.emit('join room', '123');
+      // socket.emit('join room', '123');
     });
 
     socket.on('gaze', PlotGaze)
 
-    var iframe = document.getElementById(FRAMEID)
-    if(!iframe) {
-      iframe = document.createElement('iframe')
-      iframe.id = FRAMEID
-      iframe.setAttribute('style', `
+    var iframe = document.createElement('iframe')
+    iframe.id = FRAMEID
+    iframe.setAttribute('style', `
       position: fixed;
       z-index: 10000000000;
       width: 100%;
       height: 100%;
+      top: 0px;
+      left: 0px;
       border: none;`)
-      iframe.setAttribute('allow', 'camera;fullscreen')
-      document.body.appendChild(iframe)
-      iframe.src = DOMAIN + '/gaze/track.html'
+    iframe.setAttribute('allow', 'camera;fullscreen')
+    document.body.appendChild(iframe)
+    iframe.src = DOMAIN + '/gaze/track.html'
 
-      addEventListener('message', event => {
-        var data = event.data
-        if(data === 'calibrationComplete') {
-          $(iframe).css('width', '0px')
-        }
-        if(data === 'exit') {
-          $(iframe).css('width', '0px')
-        }
-        else if(data.type === 'emit') {
-          socket.emit(...data.args)
-        }
-      })
-    } else {
-      $(iframe).css('width', '100%')
-    }
+    addEventListener('message', event => {
+      var data = event.data
+      if(data === 'calibrationComplete') {
+        $(iframe).css('width', '0px')
+      }
+      if(data === 'exit') {
+        $(iframe).css('width', '0px')
+      }
+      else if(data.type === 'emit') {
+        socket.emit(...data.args)
+      }
+    })
   })
+} else {
+  var iframe = document.getElementById(FRAMEID)
+  if($(iframe).css('width') === '0px') {
+    $(iframe).css('width', '100%')
+  } else {
+    $(iframe).css('width', '0px')
+  }
 }

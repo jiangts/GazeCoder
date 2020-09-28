@@ -24,10 +24,12 @@
 .instructions h4 {
   font-weight: bold;
   font-size: 1.25rem;
-  padding-top: 3rem;
 }
 .instructions p {
   margin: 5px 0px;
+}
+.step {
+  padding-bottom: 3rem;
 }
 #exit {
   position: fixed;
@@ -36,13 +38,15 @@
 }
       </style>
       <div class="instructions" style="text-align: left; margin: 0px 20%;">
-        <div class="step-1">
+        <div class="step s-1">
           <h4>Step 1:</h4>
           <p>Enter room id</p>
-          <input name="room-id"></input>
-          <button id='join-room'>Connect</button>
+          <form id="room">
+            <input name="room-id"></input>
+            <button type="submit">Connect</button>
+          </form>
         </div>
-        <div class="step-1">
+        <div class="step s-2" style="display:none;">
           <h4>Step 2:</h4>
           <p>Calibrate eye tracker</p>
           <button id='startid'>Start eye tracking</button>

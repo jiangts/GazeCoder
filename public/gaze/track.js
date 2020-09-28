@@ -53,6 +53,13 @@ $(function() {
   if(inIframe) {
     $('#exit').show()
   }
+
+  $('form#room').submit(e => {
+    e.preventDefault()
+    const val = $(e.target).find('input').val()
+    messageParent({ type: 'emit', args: ['join room', val] })
+    $('.step.s-2').show()
+  })
 })
 
 function start() {

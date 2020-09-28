@@ -19,6 +19,9 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+var serveIndex = require('serve-index');
+app.use('/logs', serveIndex(__dirname + '/logs'));
+
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 

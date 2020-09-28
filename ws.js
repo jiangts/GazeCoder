@@ -15,8 +15,16 @@ module.exports = (io, app) => {
       socket.room = room
     })
 
+    socket.on('disconnect', () => {
+      if(socket.room) {
+        io.to(socket.room).emit('left room', socket.id)
+        socket.leave(socket.room)
+      }
+    })
+
     socket.on('gaze', GazeData => {
       if(socket.room) {
+        GazeData.sid = socket.id
         socket.to(socket.room).emit('gaze', GazeData);
       }
     })

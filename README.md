@@ -2,9 +2,11 @@
 
 To install the extension
 
-1. download the latest extension [here](https://github.com/jiangts/GazeCoder/raw/master/crx/releases/latest.crx)
+1. download and unzip the latest extension [here](https://github.com/jiangts/GazeCoder/raw/master/crx/releases/latest.zip). It should create a folder named `crx`.
 2. visit chrome://extensions
-3. drag the `.crx` package onto the chrome://extensions window
+3. turn on "developer mode" in the top right corner
+4. click "load unpacked extension" button in the top left corner
+5. select the `crx` folder
 
 
 To use the extension:

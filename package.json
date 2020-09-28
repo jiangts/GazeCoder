@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
-    "serve": "NODE_ENV=production pm2 start ./bin/www"
+    "serve": "NODE_ENV=production pm2 start ./bin/www",
+    "archive": "git archive --output=crx/releases/latest.zip --format=zip HEAD ./crx"
   },
   "dependencies": {
     "cookie-parser": "~1.4.4",

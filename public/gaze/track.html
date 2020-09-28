@@ -6,26 +6,57 @@
     <script src="../js/GazeCloudAPI.js" ></script>
     <script src="../js/jquery-2.2.4.min.js" ></script>
     <script src="../js/screenfull.min.js" ></script>
+    <script src="../js/mousetrap.min.js" ></script>
     <script src="/socket.io/socket.io.js" ></script>
     <script src="./track.js"></script>
   </head>
-  <body style="overflow:hidden;">
+  <body>
 
     <div style="text-align: center;display: block" >
 
-      <h1>GazeCloud API</h1>
+      <h1>Welcome to GazeCoder</h1>
+      <!--
       <h4>WebCam Online Eye-Tracking</h4>
+      -->
       <br>
 
-      <button id='startid'>Start eye tracking</button>
+      <style>
+.instructions h4 {
+  font-weight: bold;
+  font-size: 1.25rem;
+  padding-top: 3rem;
+}
+.instructions p {
+  margin: 5px 0px;
+}
+#exit {
+  position: fixed;
+  top: 5px;
+  right: 5px;
+}
+      </style>
+      <div class="instructions" style="text-align: left; margin: 0px 20%;">
+        <div class="step-1">
+          <h4>Step 1:</h4>
+          <p>Enter room id</p>
+          <input name="room-id"></input>
+          <button id='join-room'>Connect</button>
+        </div>
+        <div class="step-1">
+          <h4>Step 2:</h4>
+          <p>Calibrate eye tracker</p>
+          <button id='startid'>Start eye tracking</button>
+        </div>
+      </div>
+
       <button id='stopid' style= 'display:none'>Stop</button>
-      <button id='exit' style= 'display:none'>Exit</button>
+      <button id='exit' style= 'display:none'>X</button>
 
-        </label>
+      </label>
 
-        <br>
-        <br>
-        <br>
+      <br>
+      <br>
+      <br>
 
 
     </div>

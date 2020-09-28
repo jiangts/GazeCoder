@@ -20,6 +20,8 @@ if(!inIframe) {
     console.log('connected')
     socket.emit('join room', '123');
   });
+} else {
+  Mousetrap.bind('esc', () => messageParent('exit'));
 }
 
 
@@ -27,6 +29,7 @@ if(!inIframe) {
 GazeCloudAPI.OnCalibrationComplete = function(){
   screenfull.exit()
   messageParent('calibrationComplete')
+  document.body.style.overflow = ""
   console.log('gaze Calibration Complete')
 }
 GazeCloudAPI.OnCamDenied = function() {
@@ -53,6 +56,7 @@ $(function() {
 })
 
 function start() {
+  document.body.style.overflow = "hidden"
   screenfull.request()
   document.getElementById("startid").style.display = 'none';
   document.getElementById("stopid").style.display = 'block';
@@ -62,6 +66,7 @@ function start() {
 }
 
 function stop() {
+  document.body.style.overflow = ""
   document.getElementById("startid").style.display = 'block';
   document.getElementById("stopid").style.display = 'none';
   GazeCloudAPI.StopEyeTracking();

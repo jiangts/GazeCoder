@@ -1,3 +1,9 @@
+// var DOMAIN = 'http://localhost:3000'
+var DOMAIN = 'http://35.188.80.59/'
+
+var INJECTED = '__GAZECODER__'
+var FRAMEID = 'gazecoder-frame'
+
 function PlotGaze(GazeData) {
 
   /*
@@ -43,10 +49,6 @@ function PlotGaze(GazeData) {
 
 }
 
-var DOMAIN = 'http://localhost:3000'
-
-var INJECTED = '__GAZECODER__'
-var FRAMEID = 'gazecoder-frame'
 
 if(!window[INJECTED]) {
   window[INJECTED] = true

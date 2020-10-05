@@ -4,7 +4,7 @@ var DOMAIN = 'http://localhost:3000'
 var INJECTED = '__GAZECODER__'
 var FRAMEID = 'gazecoder-frame'
 
-function PlotGaze(GazeData) {
+function PlotGaze(GazeData, document=document, offset) {
 
   /*
      GazeData.state // 0: valid gaze data; -1 : face tracking lost, 1 : gaze uncalibrated
@@ -24,9 +24,11 @@ function PlotGaze(GazeData) {
   var gaze = document.getElementById(id);
   if(!gaze) {
 
+    // var $gaze = $(`<div id="${id}" style ='position: absolute;display:none;width: 100px;height: 100px;border-radius: 50%;border: solid 2px  rgba(255, 255,255, .2);	box-shadow: 0 0 100px 3px rgba(125, 125,125, .5);	pointer-events: none;	z-index: 999999'></div>`)
     var $gaze = $(`<div id="${id}" style ='position: absolute;display:none;width: 100px;height: 100px;border-radius: 50%;border: solid 2px  rgba(255, 255,255, .2);	box-shadow: 0 0 100px 3px rgba(125, 125,125, .5);	pointer-events: none;	z-index: 999999'></div>`)
-    $('body').append($gaze)
+    // $('body').append($gaze)
     gaze = $gaze.get(0)
+    document.body.appendChild(gaze)
   }
   x -= gaze .clientWidth/2;
   y -= gaze .clientHeight/2;
@@ -35,6 +37,10 @@ function PlotGaze(GazeData) {
 
   gaze.style.left = x + "px";
   gaze.style.top = y + "px";
+  if(offset) {
+    gaze.style.left = x + document.esyoffsetX + 'px'
+    gaze.style.top = x + document.esyoffsetY + 'px'
+  }
 
 
   if(GazeData.state != 0)
@@ -136,6 +142,29 @@ function pageSummary(config={}) {
 
 }
 
+function renderViewport ({id, color}) {
+  return ({x, y, h, w}) => {
+
+    var iframe2 = document.querySelector('iframe#esy-thumbnail')
+    var doc = iframe2.contentDocument
+    var scrollWin = doc.getElementById(id)
+    if(!scrollWin) {
+      scrollWin = document.createElement('div')
+      scrollWin.id = id
+      scrollWin.setAttribute('style', `position: absolute;z-index: 1000000000;border: 10px solid ${color};`)
+      doc.body.append(scrollWin)
+    }
+    doc.esyoffsetX = x
+    doc.esyoffsetY = y
+    scrollWin.style.top = y + 'px'
+    scrollWin.style.left = x + 'px'
+    scrollWin.style.width = w + 'px'
+    scrollWin.style.height = h + 'px'
+    // doc.querySelector(scrollSel).scrollTo(x, y)
+
+  }
+}
+
 
 
 if(!window[INJECTED]) {
@@ -148,7 +177,14 @@ if(!window[INJECTED]) {
       // socket.emit('join room', '123');
     });
 
-    socket.on('gaze', PlotGaze)
+    // socket.on('gaze', PlotGaze)
+    let iframe2
+    socket.on('gaze', data => {
+      if(!iframe2) {
+        iframe2 = document.querySelector('iframe#esy-thumbnail')
+      }
+      PlotGaze(data, iframe2.contentDocument, true)
+    })
     socket.on('left room', sid => {
       $('#' + sid).remove()
     })
@@ -191,26 +227,13 @@ if(!window[INJECTED]) {
       var h = window.innerHeight
       var x = t.scrollLeft
       var y = t.scrollTop
-      socket.emit('scroll', { x, y, h, w })
+      var data = { x, y, h, w }
+      renderViewport({ id: 'esy-sw-me', color: 'darkgrey' })(data)
+      socket.emit('scroll', data)
     })
 
-    socket.on('scroll', ({x, y, h, w}) => {
-
-      var iframe2 = document.querySelector('iframe#esy-thumbnail')
-      var doc = iframe2.contentDocument
-      var scrollWin = doc.querySelector(scrollWinSel)
-      if(!scrollWin) {
-        scrollWin = document.createElement('div')
-        scrollWin.classList.add('esy-scroller')
-        scrollWin.setAttribute('style', 'position: absolute;z-index: 1000000000;border: 10px solid red;')
-        doc.body.append(scrollWin)
-      }
-      scrollWin.style.top = y + 'px'
-      scrollWin.style.left = x + 'px'
-      scrollWin.style.width = w + 'px'
-      scrollWin.style.height = h + 'px'
-      // doc.querySelector(scrollSel).scrollTo(x, y)
-
+    socket.on('scroll', data => {
+      renderViewport({ id: data.id, color: '#39FF14' })(data)
     })
   })
 } else {

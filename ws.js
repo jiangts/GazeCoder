@@ -29,5 +29,12 @@ module.exports = (io, app) => {
       }
     })
 
+    socket.on('scroll', data => {
+      if(socket.room) {
+        data.sid = socket.id
+        socket.to(socket.room).emit('scroll', data);
+      }
+    })
+
   });
 }

@@ -83,8 +83,9 @@ function pageSummary(config={}) {
       html.clientHeight, html.scrollHeight, html.offsetHeight );
   }
 
-  var scale = 0.15
-  var maxHeight = body.clientHeight / scale * 0.5
+  var scale = 0.10
+  // var maxHeight = body.clientHeight / scale * 0.5
+  var maxHeight = body.clientHeight / scale * 0.9
 
   iframe.setAttribute('style', `position: fixed;
     bottom: 1rem;
@@ -92,7 +93,8 @@ function pageSummary(config={}) {
     transform-origin: right bottom;
     transform: scale(${scale});
     width: 100vw;
-    height: ${docheight}px;
+    /*height: ${docheight}px;*/
+    height: ${maxHeight}px;
     max-height: ${maxHeight}px;
     pointer-events: none;
     opacity: 0.85`)

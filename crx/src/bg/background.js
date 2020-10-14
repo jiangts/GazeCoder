@@ -31,6 +31,7 @@ chrome.browserAction.onClicked.addListener(async (tab) => {
     "js/jquery-2.2.4.min.js",
     "js/toastr.min.js",
     "js/socket.io.js",
+    "js/lodash.min.js",
     "src/inject/index.js"
   ]
   await Promise.all(stylesheets.map(includeCSS))

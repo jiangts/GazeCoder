@@ -4,7 +4,38 @@ var DOMAIN = '//gazecode.ml'
 var INJECTED = '__GAZECODER__'
 var FRAMEID = 'gazecoder-frame'
 
-function PlotGaze(GazeData, document=document, offset) {
+/*
+var scrollParent = $0
+var div = document.createElement('div')
+div.style.width=div.style.height='2px'
+div.style.border='2px solid red'
+div.style.position='absolute'
+scrollParent.appendChild(div)
+var rect = scrollParent.getBoundingClientRect()
+scrollParent.addEventListener('click', e => {
+    console.log(e)
+    div.style.left = e.x - rect.x + scrollParent.scrollLeft + 'px'
+    div.style.top = e.y - rect.y + scrollParent.scrollTop + 'px'
+})
+ */
+
+// deep note specific
+var getRect = _.memoize(el => el.getBoundingClientRect())
+function deepnoteProcessGaze(GazeData, config={}) {
+  const { scroller } = config
+
+  var x = GazeData.docX;
+  var y = GazeData.docY;
+  const el = document.elementFromPoint(x, y)
+  if(scroller.contains(el)) {
+    GazeData.deepnote = 1
+    GazeData.rect = getRect(scroller)
+    GazeData.offset = { x: scroller.scrollLeft, y: scroller.scrollTop }
+  }
+  return GazeData
+}
+
+function PlotGaze(GazeData, document, offset, scroller) {
 
   /*
      GazeData.state // 0: valid gaze data; -1 : face tracking lost, 1 : gaze uncalibrated
@@ -39,7 +70,17 @@ function PlotGaze(GazeData, document=document, offset) {
   gaze.style.top = y + "px";
   if(offset) {
     gaze.style.left = x + document.esyoffsetX + 'px'
-    gaze.style.top = x + document.esyoffsetY + 'px'
+    gaze.style.top = y + document.esyoffsetY + 'px'
+  } else {
+    // deep note specific
+    if(GazeData.deepnote) {
+      $(scroller).append($gaze)
+      const { rect, offset } = GazeData
+      gaze.style.left = x - rect.x + offset.x + 'px'
+      gaze.style.top = y - rect.y + offset.y + 'px'
+    } else {
+      $('body').append($gaze)
+    }
   }
 
 
@@ -179,7 +220,8 @@ if(!window[INJECTED]) {
       // socket.emit('join room', '123');
     });
 
-    // socket.on('gaze', PlotGaze)
+    // deep note specific
+    socket.on('gaze', data => PlotGaze(data, document, false, scrollNode))
     let iframe2
     socket.on('gaze', data => {
       if(!iframe2) {
@@ -214,7 +256,14 @@ if(!window[INJECTED]) {
         $(iframe).css('width', '0px')
       }
       else if(data.type === 'emit') {
-        socket.emit(...data.args)
+        if(data.args[0] === 'gaze') {
+          // deep note specific
+          socket.emit('gaze', deepnoteProcessGaze(data.args[1], {
+            scroller: scrollNode
+          }))
+        } else {
+          socket.emit(...data.args)
+        }
       }
     })
 

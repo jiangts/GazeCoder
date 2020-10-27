@@ -105,8 +105,10 @@ function PlotGaze(GazeData, document, offset, scroller) {
   }
   else
   {
-    if( gaze.style.display  == 'none' && !Gazedata.deepnote) {
-      gaze.style.display = 'block';
+    if( gaze.style.display  == 'none') {
+      if(!Gazedata.deepnote) {
+        gaze.style.display = 'block';
+      }
       $notif.hide()
     }
   }

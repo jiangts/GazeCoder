@@ -1,5 +1,5 @@
-// var DOMAIN = 'http://localhost:3000'
-var DOMAIN = '//gazecode.ml'
+var DOMAIN = 'http://localhost:3000'
+// var DOMAIN = '//gazecode.ml'
 
 var INJECTED = '__GAZECODER__'
 var FRAMEID = 'gazecoder-frame'
@@ -76,6 +76,7 @@ function PlotGaze(GazeData, document, offset, scroller) {
     if(GazeData.deepnote) {
       $(scroller).append($gaze)
       const { rect, offset } = GazeData
+      console.log('abs | rect | scroll', {x, y}, rect, offset)
       gaze.style.left = x - rect.x + offset.x + 'px'
       gaze.style.top = y - rect.y + offset.y + 'px'
     } else {
@@ -84,15 +85,23 @@ function PlotGaze(GazeData, document, offset, scroller) {
   }
 
 
+  var $notif = $('#esy-notif')
+  if(!$notif.length) {
+    $notif = $(`<div id="esy-notif" style="display: none; position: fixed; top: 5px; right: 5px; border: 1px solid red; background-color: white;">partner is looking away</div>`).appendTo('body')
+  }
   if(GazeData.state != 0)
   {
-    if( gaze.style.display  == 'block')
+    if( gaze.style.display  == 'block') {
       gaze.style.display = 'none';
+      $notif.show()
+    }
   }
   else
   {
-    if( gaze.style.display  == 'none')
+    if( gaze.style.display  == 'none') {
       gaze.style.display = 'block';
+      $notif.hide()
+    }
   }
 
 }
@@ -197,8 +206,12 @@ function renderViewport ({id, color}) {
       scrollWin.setAttribute('style', `position: absolute;z-index: 1000000000;border: 10px solid ${color};`)
       doc.body.append(scrollWin)
     }
-    doc.esyoffsetX = x
-    doc.esyoffsetY = y
+    // set offsets for gaze bubble in thumbnail
+    // but only when remote scrolls, not when local scrolls
+    if(id !== 'esy-sw-me') {
+      doc.esyoffsetX = x
+      doc.esyoffsetY = y
+    }
     scrollWin.style.top = y + 'px'
     scrollWin.style.left = x + 'px'
     scrollWin.style.width = w + 'px'

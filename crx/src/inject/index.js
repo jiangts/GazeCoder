@@ -73,9 +73,8 @@ function PlotGaze(GazeData, document, offset, scroller) {
     gaze.style.top = y + document.esyoffsetY + 'px'
   } else {
     // deep note specific
-
     var deepgaze = document.getElementById('deep' + id);
-    if(!deepgaze) {
+    if(!deepgaze && scroller) {
       var $gaze = $(`<div id="${'deep' + id}" style ='position: absolute;display:none;width: 100px;height: 100px;border-radius: 50%;border: solid 2px  rgba(255, 255,255, .2);	box-shadow: 0 0 100px 3px rgba(125, 125,125, .5);	pointer-events: none;	z-index: 999999'></div>`)
       deepgaze = $gaze.get(0)
       scroller.appendChild(deepgaze)
@@ -86,11 +85,10 @@ function PlotGaze(GazeData, document, offset, scroller) {
       deepgaze.style.top = y - rect.y + offset.y + 'px'
       $(gaze).hide()
       $(deepgaze).show()
+    } else {
+      $(gaze).show()
+      $(deepgaze).hide()
     }
-    // else {
-    //   $(gaze).show()
-    //   $(deepgaze).hide()
-    // }
   }
 
 
@@ -107,7 +105,7 @@ function PlotGaze(GazeData, document, offset, scroller) {
   }
   else
   {
-    if( gaze.style.display  == 'none') {
+    if( gaze.style.display  == 'none' && !Gazedata.deepnote) {
       gaze.style.display = 'block';
       $notif.hide()
     }

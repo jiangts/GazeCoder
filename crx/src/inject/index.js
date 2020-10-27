@@ -86,10 +86,11 @@ function PlotGaze(GazeData, document, offset, scroller) {
       deepgaze.style.top = y - rect.y + offset.y + 'px'
       $(gaze).hide()
       $(deepgaze).show()
-    } else {
-      $(gaze).show()
-      $(deepgaze).hide()
     }
+    // else {
+    //   $(gaze).show()
+    //   $(deepgaze).hide()
+    // }
   }
 
 

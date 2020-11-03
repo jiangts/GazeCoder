@@ -119,7 +119,7 @@ function PlotGaze(GazeData, document, offset, scroller) {
   else
   {
     if( gaze.style.display  == 'none') {
-      if(!Gazedata.deepnote) {
+      if(!GazeData.deepnote) {
         gaze.style.display = 'block';
       }
       $notif.hide()

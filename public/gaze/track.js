@@ -77,6 +77,7 @@ DroppingBuffer.prototype.getState = function() {
 }
 
 
+let cursorsetting = true
 let smoothsetting = true
 let xbuf = new DroppingBuffer(5)
 let ybuf = new DroppingBuffer(5)
@@ -122,6 +123,14 @@ $(function() {
   $('#gaze-smoothing').prop('checked', smoothsetting)
   $('#gaze-smoothing').change(e => {
     smoothsetting = e.target.checked
+  })
+  $('#shared-cursor').change(e => {
+    cursorsetting = e.target.checked
+    if(cursorsetting) {
+      messageParent('cursor on')
+    } else {
+      messageParent('cursor off')
+    }
   })
   $('form#room').submit(e => {
     e.preventDefault()

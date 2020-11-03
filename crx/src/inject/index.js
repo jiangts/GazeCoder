@@ -132,9 +132,9 @@ function PlotMouse(MouseData, document, offset, scroller) {
   var { x, y } = MouseData
   x -= 4 // image offset
 
-  var id = MouseData.sid || 'mouse'
+  var id = 'mouse-' + MouseData.sid || 'mouse'
   var mouse = document.getElementById(id);
-  const url = DOMAIN + '/images/iconmonstr-cursor-32.svg'
+  const url = DOMAIN + '/images/iconmonstr-cursor-32-green.svg'
   if(!mouse) {
     var $mouse = $(`<img id="${id}" src="${url}" style ="position: absolute; z-index: 1000000000; pointer-events: none; height: 20px; width: 20px;"></img>`)
     mouse = $mouse.get(0)
@@ -331,22 +331,11 @@ if(!window[INJECTED]) {
     document.body.appendChild(iframe)
     iframe.src = DOMAIN + '/gaze/track.html'
 
-    addEventListener('mousemove', event => {
-      // const url = DOMAIN + '/images/iconmonstr-cursor-32.svg'
-      // let img = document.querySelector(`img[src="${url}"]`)
-      // if(!img) {
-      //   img = document.createElement('img')
-      //   img.src=url
-      //   document.body.appendChild(img)
-      // }
-      // img.style=`position: absolute;
-      // pointer-events: none;
-      // height: 20px; width: 20px;
-      // left: ${event.x-4}px; top: ${event.y}px`
+    const processMouse = event => {
       socket.emit('mouse', deepnoteProcessMouse(event, {
         scroller: scrollNode
       }))
-    })
+    }
     addEventListener('message', event => {
       var data = event.data
       if(data === 'calibrationComplete') {
@@ -354,6 +343,12 @@ if(!window[INJECTED]) {
       }
       if(data === 'exit') {
         $(iframe).css('width', '0px')
+      }
+      if(data === 'cursor on') {
+        addEventListener('mousemove', processMouse)
+      }
+      if(data === 'cursor off') {
+        removeEventListener('mousemove', processMouse)
       }
       else if(data.type === 'emit') {
         if(data.args[0] === 'gaze') {

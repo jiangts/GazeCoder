@@ -380,6 +380,12 @@ if(!window[INJECTED]) {
 
     socket.on('scroll', data => {
       renderViewport({ id: data.id, color: '#39FF14' })(data)
+      if(data.w < window.innerWidth) {
+        chrome.runtime.sendMessage({
+          type: "resize",
+          data
+        }, function(response) {});
+      }
     })
   })
 } else {

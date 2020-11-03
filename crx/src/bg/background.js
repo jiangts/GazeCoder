@@ -57,5 +57,24 @@ chrome.browserAction.onClicked.addListener(async (tab) => {
   //     ]
   //   }
   // ]
+
 });
 
+chrome.runtime.onMessage.addListener(
+  function(request, sender, sendResponse) {
+    console.log(sender.tab ?
+      "from a content script:" + sender.tab.url :
+      "from the extension");
+    if (request.type == "resize") {
+      chrome.windows.getCurrent(function(wind) {
+        var maxWidth = window.screen.availWidth;
+        var maxHeight = window.screen.availHeight;
+        chrome.windows.update(wind.id, {
+          left: 0,
+          top: 0,
+          width: request.data.w,
+          height: maxHeight
+        });
+      });
+    }
+  });

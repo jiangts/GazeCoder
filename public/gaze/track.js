@@ -25,6 +25,7 @@ if(!inIframe) {
 }
 
 
+// to show gaze on "experiments page" for recalibration purposes only
 function PlotGaze(GazeData) {
 
   var x = GazeData.docX;
@@ -57,6 +58,29 @@ function PlotGaze(GazeData) {
 
 }
 
+function DroppingBuffer(len) {
+  this.len = len;
+  this.idx = 0
+  this.state = new Array(len)
+}
+
+DroppingBuffer.prototype.push = function(item) {
+  this.state[this.idx] = item
+  this.idx = (this.idx + 1) % this.len
+  return item
+}
+
+DroppingBuffer.prototype.getState = function() {
+  var start = this.state.slice(this.idx)
+  var end = this.state.slice(0, this.idx)
+  return start.concat(end)
+}
+
+
+let smoothsetting = true
+let xbuf = new DroppingBuffer(5)
+let ybuf = new DroppingBuffer(5)
+
 
 //////set callbacks/////////
 GazeCloudAPI.OnCalibrationComplete = function(){
@@ -76,6 +100,12 @@ GazeCloudAPI.OnResult = function(GazeData) {
   if(!inIframe) {
     socket.emit('gaze', GazeData);
   } else {
+    if(smoothsetting) {
+      xbuf.push(GazeData.docX)
+      ybuf.push(GazeData.docY)
+      GazeData.docX = xbuf.getState().reduce((a, b) => a + b) / 5
+      GazeData.docY = ybuf.getState().reduce((a, b) => a + b) / 5
+    }
     messageParent({ type: 'emit', args: ['gaze', GazeData] })
   }
 }
@@ -89,6 +119,10 @@ $(function() {
     $('#exit').show()
   }
 
+  $('#gaze-smoothing').prop('checked', smoothsetting)
+  $('#gaze-smoothing').change(e => {
+    smoothsetting = e.target.checked
+  })
   $('form#room').submit(e => {
     e.preventDefault()
     const val = $(e.target).find('input').val()

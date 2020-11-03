@@ -1,5 +1,5 @@
-// var DOMAIN = 'http://localhost:3000'
-var DOMAIN = '//gazecode.ml'
+var DOMAIN = 'http://localhost:3000'
+// var DOMAIN = '//gazecode.ml'
 
 var INJECTED = '__GAZECODER__'
 var FRAMEID = 'gazecoder-frame'
@@ -35,6 +35,19 @@ function deepnoteProcessGaze(GazeData, config={}) {
   return GazeData
 }
 
+function deepnoteProcessMouse(event, config={}) {
+  const { x, y } = event
+  const { scroller } = config
+  const MouseData = { x, y }
+
+  if(scroller.contains(event.target)) {
+    MouseData.deepnote = 1
+    MouseData.rect = getRect(scroller)
+    MouseData.offset = { x: scroller.scrollLeft, y: scroller.scrollTop }
+  }
+  return MouseData
+}
+
 function PlotGaze(GazeData, document, offset, scroller) {
 
   /*
@@ -56,7 +69,7 @@ function PlotGaze(GazeData, document, offset, scroller) {
   if(!gaze) {
 
     // var $gaze = $(`<div id="${id}" style ='position: absolute;display:none;width: 100px;height: 100px;border-radius: 50%;border: solid 2px  rgba(255, 255,255, .2);	box-shadow: 0 0 100px 3px rgba(125, 125,125, .5);	pointer-events: none;	z-index: 999999'></div>`)
-    var $gaze = $(`<div id="${id}" style ='position: absolute;display:none;width: 100px;height: 100px;border-radius: 50%;border: solid 2px  rgba(255, 255,255, .2);	box-shadow: 0 0 100px 3px rgba(125, 125,125, .5);	pointer-events: none;	z-index: 999999'></div>`)
+    var $gaze = $(`<div id="${id}" style ='position: absolute;display:block;width: 100px;height: 100px;border-radius: 50%;border: solid 2px rgba(255, 255,255, .2);	box-shadow: 0 0 100px 3px rgba(125, 125,125, .5);	pointer-events: none;	z-index: 999999'></div>`)
     // $('body').append($gaze)
     gaze = $gaze.get(0)
     document.body.appendChild(gaze)
@@ -110,6 +123,47 @@ function PlotGaze(GazeData, document, offset, scroller) {
         gaze.style.display = 'block';
       }
       $notif.hide()
+    }
+  }
+
+}
+
+function PlotMouse(MouseData, document, offset, scroller) {
+  var { x, y } = MouseData
+  x -= 4 // image offset
+
+  var id = MouseData.sid || 'mouse'
+  var mouse = document.getElementById(id);
+  const url = DOMAIN + '/images/iconmonstr-cursor-32.svg'
+  if(!mouse) {
+    var $mouse = $(`<img id="${id}" src="${url}" style ="position: absolute; z-index: 1000000000; pointer-events: none; height: 20px; width: 20px;"></img>`)
+    mouse = $mouse.get(0)
+    document.body.appendChild(mouse)
+  }
+
+
+  mouse.style.left = x + "px";
+  mouse.style.top = y + "px";
+  if(offset) {
+    mouse.style.left = x + document.esyoffsetX + 'px'
+    mouse.style.top = y + document.esyoffsetY + 'px'
+  } else {
+    // deep note specific
+    var deepmouse = document.getElementById('deep' + id);
+    if(!deepmouse && scroller) {
+      var $mouse = $(`<img id="${'deep' + id}" src="${url}" style ="position: absolute; z-index: 1000000000; pointer-events: none; height: 20px; width: 20px;"></img>`)
+      deepmouse = $mouse.get(0)
+      scroller.appendChild(deepmouse)
+    }
+    if(MouseData.deepnote) {
+      const { rect, offset } = MouseData
+      deepmouse.style.left = x - rect.x + offset.x + 'px'
+      deepmouse.style.top = y - rect.y + offset.y + 'px'
+      $(mouse).hide()
+      $(deepmouse).show()
+    } else {
+      $(mouse).show()
+      $(deepmouse).hide()
     }
   }
 
@@ -243,13 +297,21 @@ if(!window[INJECTED]) {
     });
 
     // deep note specific
-    socket.on('gaze', data => PlotGaze(data, document, false, scrollNode))
     let iframe2
     socket.on('gaze', data => {
+      PlotGaze(data, document, false, scrollNode)
       if(!iframe2) {
         iframe2 = document.querySelector('iframe#esy-thumbnail')
       }
       PlotGaze(data, iframe2.contentDocument, true)
+    })
+
+    socket.on('mouse', data => {
+      PlotMouse(data, document, false, scrollNode)
+      if(!iframe2) {
+        iframe2 = document.querySelector('iframe#esy-thumbnail')
+      }
+      PlotMouse(data, iframe2.contentDocument, true)
     })
     socket.on('left room', sid => {
       $('#' + sid).remove()
@@ -269,6 +331,22 @@ if(!window[INJECTED]) {
     document.body.appendChild(iframe)
     iframe.src = DOMAIN + '/gaze/track.html'
 
+    addEventListener('mousemove', event => {
+      // const url = DOMAIN + '/images/iconmonstr-cursor-32.svg'
+      // let img = document.querySelector(`img[src="${url}"]`)
+      // if(!img) {
+      //   img = document.createElement('img')
+      //   img.src=url
+      //   document.body.appendChild(img)
+      // }
+      // img.style=`position: absolute;
+      // pointer-events: none;
+      // height: 20px; width: 20px;
+      // left: ${event.x-4}px; top: ${event.y}px`
+      socket.emit('mouse', deepnoteProcessMouse(event, {
+        scroller: scrollNode
+      }))
+    })
     addEventListener('message', event => {
       var data = event.data
       if(data === 'calibrationComplete') {

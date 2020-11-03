@@ -36,5 +36,12 @@ module.exports = (io, app) => {
       }
     })
 
+    socket.on('mouse', MouseData => {
+      if(socket.room) {
+        MouseData.sid = socket.id
+        socket.to(socket.room).emit('mouse', MouseData);
+      }
+    })
+
   });
 }

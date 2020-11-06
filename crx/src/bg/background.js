@@ -75,6 +75,7 @@ chrome.runtime.onMessage.addListener(
           width: request.data.w,
           height: maxHeight
         });
+        sendResponse({ width: request.data.w, height: maxHeight })
       });
     }
   });

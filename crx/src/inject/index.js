@@ -388,6 +388,16 @@ if(!window[INJECTED]) {
       }
     })
   })
+
+  function addStyle(styleString) {
+    const style = document.createElement('style');
+    style.id = 'nix-cursor'
+    style.textContent = styleString;
+    document.head.append(style);
+  }
+  addStyle(`.view-overlays[role="presentation"], .contentWidgets {
+    display: none !important;
+  }`);
 } else {
   var iframe = document.getElementById(FRAMEID)
   if($(iframe).css('width') === '0px') {

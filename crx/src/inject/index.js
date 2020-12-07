@@ -395,7 +395,7 @@ if(!window[INJECTED]) {
     style.textContent = styleString;
     document.head.append(style);
   }
-  addStyle(`.view-overlays[role="presentation"], .contentWidgets {
+  addStyle(`.view-overlays[role="presentation"] .cdr, .contentWidgets {
     display: none !important;
   }`);
 } else {

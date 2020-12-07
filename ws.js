@@ -32,15 +32,17 @@ module.exports = (io, app) => {
       room = room + ''
       socket.join(room)
       socket.room = room
-      if(!loggers.room) {
-        loggers.room = makeLogger(room+'.jsonl')
+      if(!loggers[room]) {
+        const logger = makeLogger(room+'.jsonl')
+        _.set(loggers, [room, 'logger'].join('.'), logger)
+        _.set(loggers, [room, 'log'].join('.'), _.throttle((...args) => logger.info(...args), 333))
       }
     })
 
     socket.on('disconnect', () => {
       if(socket.room) {
         io.to(socket.room).emit('left room', socket.id)
-        loggers.room.info({ event: 'left room', data: socket.id })
+        loggers[socket.room].log({ event: 'left room', data: socket.id })
         socket.leave(socket.room)
       }
     })
@@ -49,7 +51,7 @@ module.exports = (io, app) => {
       if(socket.room) {
         GazeData.sid = socket.id
         socket.to(socket.room).emit('gaze', GazeData);
-        loggers.room.info({ event: 'gaze', data: GazeData })
+        loggers[socket.room].log({ event: 'gaze', data: GazeData })
       }
     })
 
@@ -57,7 +59,7 @@ module.exports = (io, app) => {
       if(socket.room) {
         data.sid = socket.id
         socket.to(socket.room).emit('scroll', data);
-        loggers.room.info({ event: 'scroll', data })
+        loggers[socket.room].log({ event: 'scroll', data })
       }
     })
 
@@ -65,7 +67,7 @@ module.exports = (io, app) => {
       if(socket.room) {
         MouseData.sid = socket.id
         socket.to(socket.room).emit('mouse', MouseData);
-        loggers.room.info({ event: 'mouse', data: MouseData })
+        loggers[socket.room].log({ event: 'mouse', data: MouseData })
       }
     })
 

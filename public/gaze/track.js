@@ -79,8 +79,9 @@ DroppingBuffer.prototype.getState = function() {
 
 let cursorsetting = true
 let smoothsetting = true
-let xbuf = new DroppingBuffer(5)
-let ybuf = new DroppingBuffer(5)
+let smoothsize = 20 // about 15 samples / sec
+let xbuf = new DroppingBuffer(smoothsize)
+let ybuf = new DroppingBuffer(smoothsize)
 
 
 //////set callbacks/////////
@@ -104,8 +105,8 @@ GazeCloudAPI.OnResult = function(GazeData) {
     if(smoothsetting) {
       xbuf.push(GazeData.docX)
       ybuf.push(GazeData.docY)
-      GazeData.docX = xbuf.getState().reduce((a, b) => a + b) / 5
-      GazeData.docY = ybuf.getState().reduce((a, b) => a + b) / 5
+      GazeData.docX = xbuf.getState().reduce((a, b) => a + b) / smoothsize
+      GazeData.docY = ybuf.getState().reduce((a, b) => a + b) / smoothsize
     }
     messageParent({ type: 'emit', args: ['gaze', GazeData] })
   }

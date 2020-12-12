@@ -79,6 +79,7 @@ DroppingBuffer.prototype.getState = function() {
 
 let cursorsetting = true
 let smoothsetting = true
+let minimapsetting = true
 let smoothsize = 20 // about 15 samples / sec
 let xbuf = new DroppingBuffer(smoothsize)
 let ybuf = new DroppingBuffer(smoothsize)
@@ -131,6 +132,14 @@ $(function() {
       messageParent('cursor on')
     } else {
       messageParent('cursor off')
+    }
+  })
+  $('#minimap').change(e => {
+    minimapsetting = e.target.checked
+    if(minimapsetting) {
+      messageParent('minimap on')
+    } else {
+      messageParent('minimap off')
     }
   })
   $('form#room').submit(e => {

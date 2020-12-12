@@ -350,6 +350,12 @@ if(!window[INJECTED]) {
       if(data === 'cursor off') {
         removeEventListener('mousemove', processMouse)
       }
+      if(data === 'minimap on') {
+        $('#esy-thumbnail').show()
+      }
+      if(data === 'minimap off') {
+        $('#esy-thumbnail').hide()
+      }
       else if(data.type === 'emit') {
         if(data.args[0] === 'gaze') {
           // deep note specific

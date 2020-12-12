@@ -170,6 +170,7 @@ function PlotMouse(MouseData, document, offset, scroller) {
 }
 
 
+var minimapOn = true
 function pageSummary(config={}) {
   var { scrollNode, scrollSel, stripTags } = config
   if(scrollSel && !scrollNode) {
@@ -351,9 +352,11 @@ if(!window[INJECTED]) {
         removeEventListener('mousemove', processMouse)
       }
       if(data === 'minimap on') {
+        minimapOn = true
         $('#esy-thumbnail').show()
       }
       if(data === 'minimap off') {
+        minimapOn = false
         $('#esy-thumbnail').hide()
       }
       else if(data.type === 'emit') {
@@ -372,7 +375,7 @@ if(!window[INJECTED]) {
     var scrollSel = `[data-cy='upload-droparea'] > :last-child`
     var scrollNode = document.querySelector(scrollSel)
     var scrollWinSel = 'div.esy-scroller'
-    setInterval(() => pageSummary({ scrollSel, stripTags: ['iframe', scrollWinSel] }), 1000)
+    setInterval(() => minimapOn && pageSummary({ scrollSel, stripTags: ['iframe', scrollWinSel] }), 1000)
     scrollNode.addEventListener('scroll', e => {
       t = e.target
       var w = window.innerWidth

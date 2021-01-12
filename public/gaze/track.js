@@ -123,8 +123,8 @@ $(function() {
   }
 
   $('#gaze-smoothing').prop('checked', smoothsetting)
-  $('#shared-cursor').prop('checked', smoothsetting)
-  $('#minimap').prop('checked', smoothsetting)
+  $('#shared-cursor').prop('checked', cursorsetting)
+  $('#minimap').prop('checked', minimapsetting)
   $('#gaze-smoothing').change(e => {
     smoothsetting = e.target.checked
   })

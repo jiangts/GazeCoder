@@ -128,6 +128,7 @@ $(function() {
   $('#gaze-smoothing').change(e => {
     smoothsetting = e.target.checked
   })
+  messageParent('cursor on')
   $('#shared-cursor').change(e => {
     cursorsetting = e.target.checked
     if(cursorsetting) {

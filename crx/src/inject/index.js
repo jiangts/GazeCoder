@@ -20,6 +20,16 @@ scrollParent.addEventListener('click', e => {
  */
 
 // deep note specific
+var markCells = scroller => {
+  if(scroller.markedCells) return
+  var cells = scroller.querySelectorAll('div[data-cy="cell"]')
+  if(cells.length > 5) {
+    scroller.querySelectorAll('div[data-cy="cell"]').forEach((el, i) => {
+      el.setAttribute('data-esy-id', i)
+    })
+    scroller.markedCells = true
+  }
+}
 var getRect = _.memoize(el => el.getBoundingClientRect())
 function deepnoteProcessGaze(GazeData, config={}) {
   const { scroller } = config
@@ -31,6 +41,11 @@ function deepnoteProcessGaze(GazeData, config={}) {
     GazeData.deepnote = 1
     GazeData.rect = getRect(scroller)
     GazeData.offset = { x: scroller.scrollLeft, y: scroller.scrollTop }
+    markCells(scroller)
+    if(el.matches('div[data-cy="cell"]')) {
+      GazeData.roi = el.getAttribute('data-esy-id')
+      console.log(GazeData.roi)
+    }
   }
   return GazeData
 }

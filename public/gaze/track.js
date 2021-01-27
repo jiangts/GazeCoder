@@ -80,6 +80,7 @@ DroppingBuffer.prototype.getState = function() {
 let cursorsetting = true
 let smoothsetting = true
 let minimapsetting = true
+let gazesetting = true
 let smoothsize = 20 // about 15 samples / sec
 let xbuf = new DroppingBuffer(smoothsize)
 let ybuf = new DroppingBuffer(smoothsize)
@@ -125,6 +126,7 @@ $(function() {
   $('#gaze-smoothing').prop('checked', smoothsetting)
   $('#shared-cursor').prop('checked', cursorsetting)
   $('#minimap').prop('checked', minimapsetting)
+  $('#gaze').prop('checked', gazesetting)
   $('#gaze-smoothing').change(e => {
     smoothsetting = e.target.checked
   })
@@ -143,6 +145,14 @@ $(function() {
       messageParent('minimap on')
     } else {
       messageParent('minimap off')
+    }
+  })
+  $('#gaze').change(e => {
+    gazesetting = e.target.checked
+    if(gazesetting) {
+      messageParent('gaze on')
+    } else {
+      messageParent('gaze off')
     }
   })
   $('form#room').submit(e => {

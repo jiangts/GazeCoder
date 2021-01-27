@@ -69,7 +69,7 @@ function PlotGaze(GazeData, document, offset, scroller) {
   if(!gaze) {
 
     // var $gaze = $(`<div id="${id}" style ='position: absolute;display:none;width: 100px;height: 100px;border-radius: 50%;border: solid 2px  rgba(255, 255,255, .2);	box-shadow: 0 0 100px 3px rgba(125, 125,125, .5);	pointer-events: none;	z-index: 999999'></div>`)
-    var $gaze = $(`<div id="${id}" style ='position: absolute;display:block;width: 100px;height: 100px;border-radius: 50%;border: solid 2px rgba(255, 255,255, .2);	box-shadow: 0 0 100px 3px rgba(125, 125,125, .5);	pointer-events: none;	z-index: 999999'></div>`)
+    var $gaze = $(`<div class='gaze-bbl' id="${id}" style ='position: absolute;display:block;width: 100px;height: 100px;border-radius: 50%;border: solid 2px rgba(255, 255,255, .2);	box-shadow: 0 0 100px 3px rgba(125, 125,125, .5);	pointer-events: none;	z-index: 999999'></div>`)
     // $('body').append($gaze)
     gaze = $gaze.get(0)
     document.body.appendChild(gaze)
@@ -88,7 +88,7 @@ function PlotGaze(GazeData, document, offset, scroller) {
     // deep note specific
     var deepgaze = document.getElementById('deep' + id);
     if(!deepgaze && scroller) {
-      var $gaze = $(`<div id="${'deep' + id}" style ='position: absolute;display:none;width: 100px;height: 100px;border-radius: 50%;border: solid 2px  rgba(255, 255,255, .2);	box-shadow: 0 0 100px 3px rgba(125, 125,125, .5);	pointer-events: none;	z-index: 999999'></div>`)
+      var $gaze = $(`<div class='gaze-bbl' id="${'deep' + id}" style ='position: absolute;display:none;width: 100px;height: 100px;border-radius: 50%;border: solid 2px  rgba(255, 255,255, .2);	box-shadow: 0 0 100px 3px rgba(125, 125,125, .5);	pointer-events: none;	z-index: 999999'></div>`)
       deepgaze = $gaze.get(0)
       scroller.appendChild(deepgaze)
     }
@@ -359,6 +359,12 @@ if(!window[INJECTED]) {
         minimapOn = false
         $('#esy-thumbnail').hide()
       }
+      if(data === 'gaze on') {
+        $('.gaze-bbl').show()
+      }
+      if(data === 'gaze off') {
+        $('.gaze-bbl').hide()
+      }
       else if(data.type === 'emit') {
         if(data.args[0] === 'gaze') {
           // deep note specific
@@ -388,7 +394,7 @@ if(!window[INJECTED]) {
     })
 
     socket.on('scroll', data => {
-      renderViewport({ id: data.id, color: '#39FF14' })(data)
+      renderViewport({ id: data.id, color: '#fc9021' })(data)
       if(data.w < window.innerWidth) {
         chrome.runtime.sendMessage({
           type: "resize",

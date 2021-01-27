@@ -258,17 +258,24 @@ function pageSummary(config={}) {
 
 }
 
-function renderViewport ({id, color}) {
+function renderViewport ({scrollSel, id, color}) {
   return ({x, y, h, w}) => {
 
     var iframe2 = document.querySelector('iframe#esy-thumbnail')
     var doc = iframe2.contentDocument
     var scrollWin = doc.getElementById(id)
+
+    var scrollNode = doc.querySelector(scrollSel)
+    var th = scrollNode.scrollHeight
+    var scrollPos = y / (th-h) * (th-iframe2.offsetHeight)
+    scrollNode.scrollTop = scrollPos
+
     if(!scrollWin) {
       scrollWin = document.createElement('div')
       scrollWin.id = id
       scrollWin.setAttribute('style', `position: absolute;z-index: 1000000000;border: 10px solid ${color};`)
-      doc.body.append(scrollWin)
+      // doc.body.append(scrollWin)
+      scrollNode.append(scrollWin)
     }
     // set offsets for gaze bubble in thumbnail
     // but only when remote scrolls, not when local scrolls
@@ -389,12 +396,12 @@ if(!window[INJECTED]) {
       var x = t.scrollLeft
       var y = t.scrollTop
       var data = { x, y, h, w }
-      renderViewport({ id: 'esy-sw-me', color: 'darkgrey' })(data)
+      renderViewport({ scrollSel, id: 'esy-sw-me', color: 'darkgrey' })(data)
       socket.emit('scroll', data)
     })
 
     socket.on('scroll', data => {
-      renderViewport({ id: data.id, color: '#fc9021' })(data)
+      renderViewport({ scrollSel, id: data.id, color: '#fc9021' })(data)
       if(data.w < window.innerWidth) {
         chrome.runtime.sendMessage({
           type: "resize",

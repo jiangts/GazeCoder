@@ -31,7 +31,7 @@ function PlotGaze(GazeData) {
   var x = GazeData.docX;
   var y = GazeData.docY;
 
-  var id = GazeData.sid || 'gaze'
+  var id = GazeData.sid || 'esy-own-gaze'
   var gaze = document.getElementById(id);
   if(!gaze) {
     var $gaze = $(`<div id="${id}" style ='position: absolute;display:none;width: 100px;height: 100px;border-radius: 50%;border: solid 2px  rgba(255, 255,255, .2);	box-shadow: 0 0 100px 3px rgba(125, 125,125, .5);	pointer-events: none;	z-index: 999999'></div>`)
@@ -93,6 +93,7 @@ GazeCloudAPI.OnCalibrationComplete = function(){
   document.body.style.overflow = ""
   console.log('gaze Calibration Complete')
   $('.step.s-3').show()
+  $('#fine-calibrate').click()
 }
 GazeCloudAPI.OnCamDenied = function() {
   console.log('camera access denied')

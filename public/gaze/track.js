@@ -81,7 +81,7 @@ let cursorsetting = true
 let smoothsetting = true
 let minimapsetting = true
 let gazesetting = true
-let smoothsize = 20 // about 15 samples / sec
+let smoothsize = 15 // about 15 samples / sec
 let xbuf = new DroppingBuffer(smoothsize)
 let ybuf = new DroppingBuffer(smoothsize)
 
@@ -101,16 +101,17 @@ GazeCloudAPI.OnCamDenied = function() {
 GazeCloudAPI.OnError = console.error
 GazeCloudAPI.UseClickRecalibration = true;
 GazeCloudAPI.OnResult = function(GazeData) {
+  if(smoothsetting) {
+    xbuf.push(GazeData.docX)
+    ybuf.push(GazeData.docY)
+    GazeData.docX = xbuf.getState().reduce((a, b) => a + b) / smoothsize
+    GazeData.docY = ybuf.getState().reduce((a, b) => a + b) / smoothsize
+  }
+
   PlotGaze(GazeData)
   if(!inIframe) {
     socket.emit('gaze', GazeData);
   } else {
-    if(smoothsetting) {
-      xbuf.push(GazeData.docX)
-      ybuf.push(GazeData.docY)
-      GazeData.docX = xbuf.getState().reduce((a, b) => a + b) / smoothsize
-      GazeData.docY = ybuf.getState().reduce((a, b) => a + b) / smoothsize
-    }
     messageParent({ type: 'emit', args: ['gaze', GazeData] })
   }
 }

@@ -60,6 +60,7 @@ function deepnoteProcessMouse(event, config={}) {
     MouseData.rect = getRect(scroller)
     MouseData.offset = { x: scroller.scrollLeft, y: scroller.scrollTop }
     markCells(scroller)
+    const el = event.target
     if(el.matches('div[data-cy="cell"]')) {
       GazeData.roi = el.getAttribute('data-esy-id')
       console.log(GazeData.roi)

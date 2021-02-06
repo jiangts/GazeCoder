@@ -85,6 +85,11 @@ let smoothsize = 15 // about 15 samples / sec
 let xbuf = new DroppingBuffer(smoothsize)
 let ybuf = new DroppingBuffer(smoothsize)
 
+var $surface = $('div.calibrate')
+$surface.append('<button class="bufsize">bufsize</button>')
+$surface.find('button.exit').click(() => {
+  smoothsize = parseInt(prompt("input whole number for smoothing buffer size"))
+})
 
 //////set callbacks/////////
 GazeCloudAPI.OnCalibrationComplete = function(){

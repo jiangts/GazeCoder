@@ -1,8 +1,8 @@
 $(function() {
   var $surface = $('div.calibrate')
-  $surface.append('<button>Exit</button>')
+  $surface.append('<button class="exit">Exit</button>')
   $surface.hide()
-  $surface.find('button').click(() => {
+  $surface.find('button.exit').click(() => {
     $('.calibrate').hide()
   })
   $surface.append

@@ -77,6 +77,29 @@ DroppingBuffer.prototype.getState = function() {
 }
 
 
+
+function TimeBuffer(ms) {
+  this.ms = ms;
+  this.state = []
+}
+
+TimeBuffer.prototype.push = function(item) {
+  var t = Date.now()
+  this.state.push({ t, item })
+  return item
+}
+
+TimeBuffer.prototype.getState = function() {
+  var last = this.state[this.state.length - 1]
+  var ms = this.ms
+
+  this.state = this.state.filter(function(p) {
+    return p.t >= last.t - ms
+  })
+  return this.state.map(p => p.item)
+}
+
+
 let cursorsetting = true
 let smoothsetting = true
 let minimapsetting = true
@@ -85,10 +108,14 @@ let smoothsize = 15 // about 15 samples / sec
 let xbuf = new DroppingBuffer(smoothsize)
 let ybuf = new DroppingBuffer(smoothsize)
 
-var $surface = $('div.calibrate')
-$surface.append('<button class="bufsize">bufsize</button>')
-$surface.find('button.exit').click(() => {
-  smoothsize = parseInt(prompt("input whole number for smoothing buffer size"))
+$(function() {
+  var $surface = $('div.calibrate')
+  $surface.append('<button class="bufsize">bufsize</button>')
+  $surface.find('button.bufsize').click(() => {
+    smoothsize = parseInt(prompt("input whole number for smoothing buffer size"))
+    xbuf = new DroppingBuffer(smoothsize)
+    ybuf = new DroppingBuffer(smoothsize)
+  })
 })
 
 //////set callbacks/////////

@@ -23,7 +23,7 @@ $(function() {
         'background-color': 'red'
       }).appendTo($surface)
   })
-  const placeBlock = (...css) => {
+  const placeBlock = (css) => {
     $('<div class="gaze-target"></div>')
       .css({
         ...css,
@@ -33,20 +33,40 @@ $(function() {
       }).appendTo($surface)
   }
   // center block
-  placeBlock({ margin: 'auto', 'margin-top': '50vh', })
+  placeBlock({ margin: 'auto', 'margin-top': '40vh', })
 
   // random blocks
-  placeBlock({ 'margin-left': '20vw', 'margin-top': '80vh', })
-  placeBlock({ 'margin-left': '30vw', 'margin-top': '70vh', })
-  placeBlock({ 'margin-left': '40vw', 'margin-top': '60vh', })
+  placeBlock({ position: 'fixed', 'left': '20vw', 'top': '80vh', })
+  placeBlock({ position: 'fixed', 'left': '30vw', 'top': '70vh', })
+  placeBlock({ position: 'fixed', 'left': '40vw', 'top': '60vh', })
+  placeBlock({ position: 'fixed', 'left': '40vw', 'top': '80vh', })
 
-  $('<div class="gaze-target"></div>')
-    .css({
-      margin: 'auto',
-      height: 50,
-      width: 50,
-      'background-color': 'red'
-    }).appendTo($surface)
+  placeBlock({ position: 'fixed', 'right': '20vw', 'top': '80vh', })
+  placeBlock({ position: 'fixed', 'right': '30vw', 'top': '70vh', })
+  placeBlock({ position: 'fixed', 'right': '40vw', 'top': '60vh', })
+  placeBlock({ position: 'fixed', 'right': '40vw', 'top': '80vh', })
+
+  placeBlock({ position: 'fixed', 'left': '20vw', 'top': '40vh', })
+  placeBlock({ position: 'fixed', 'left': '30vw', 'top': '40vh', })
+  placeBlock({ position: 'fixed', 'left': '40vw', 'top': '40vh', })
+
+  placeBlock({ position: 'fixed', 'right': '20vw', 'top': '40vh', })
+  placeBlock({ position: 'fixed', 'right': '30vw', 'top': '40vh', })
+  placeBlock({ position: 'fixed', 'right': '40vw', 'top': '40vh', })
+
+  placeBlock({ position: 'fixed', 'left': '40vw', 'top': '20vh', })
+  placeBlock({ position: 'fixed', 'right': '40vw', 'top': '20vh', })
+
+  placeBlock({ position: 'fixed', 'left': '15vw', 'top': '15vh', })
+  placeBlock({ position: 'fixed', 'right': '15vw', 'top': '15vh', })
+
+  // $('<div class="gaze-target"></div>')
+  //   .css({
+  //     margin: 'auto',
+  //     height: 50,
+  //     width: 50,
+  //     'background-color': 'red'
+  //   }).appendTo($surface)
 
   $surface.css({
     position: 'fixed',

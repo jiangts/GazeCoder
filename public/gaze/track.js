@@ -125,6 +125,8 @@ $(function() {
 })
 
 //////set callbacks/////////
+GazeCloudAPI.APIKey= "gazecode_ml_NonCommercialUse";
+
 GazeCloudAPI.OnCalibrationComplete = function(){
   screenfull.exit()
   messageParent('calibrationComplete')

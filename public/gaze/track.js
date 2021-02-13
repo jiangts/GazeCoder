@@ -105,22 +105,22 @@ let smoothsetting = true
 let minimapsetting = true
 let gazesetting = true
 let smoothsize = 15 // about 15 samples / sec
-// let xbuf = new DroppingBuffer(smoothsize)
-// let ybuf = new DroppingBuffer(smoothsize)
+let xbuf = new DroppingBuffer(smoothsize)
+let ybuf = new DroppingBuffer(smoothsize)
 
-let xbuf = new TimeBuffer(1000)
-let ybuf = new TimeBuffer(1000)
+// let xbuf = new TimeBuffer(1000)
+// let ybuf = new TimeBuffer(1000)
 
 $(function() {
   var $surface = $('div.calibrate')
   $surface.append('<button class="bufsize">bufsize</button>')
   $surface.find('button.bufsize').click(() => {
     smoothsize = parseInt(prompt("input whole number for smoothing buffer size"))
-    // xbuf = new DroppingBuffer(smoothsize)
-    // ybuf = new DroppingBuffer(smoothsize)
+    xbuf = new DroppingBuffer(smoothsize)
+    ybuf = new DroppingBuffer(smoothsize)
 
-    xbuf = new TimeBuffer(1000)
-    ybuf = new TimeBuffer(1000)
+    // xbuf = new TimeBuffer(1000)
+    // ybuf = new TimeBuffer(1000)
   })
 })
 
@@ -140,12 +140,14 @@ GazeCloudAPI.OnCamDenied = function() {
 }
 GazeCloudAPI.OnError = console.error
 GazeCloudAPI.UseClickRecalibration = true;
+var average = (array) => array.reduce((a, b) => a + b, 0) / array.length;
+
 GazeCloudAPI.OnResult = function(GazeData) {
   if(smoothsetting) {
     xbuf.push(GazeData.docX)
     ybuf.push(GazeData.docY)
-    GazeData.docX = xbuf.getState().reduce((a, b) => a + b) / smoothsize
-    GazeData.docY = ybuf.getState().reduce((a, b) => a + b) / smoothsize
+    GazeData.docX = average(xbuf.getState())
+    GazeData.docY = average(ybuf.getState())
   }
 
   PlotGaze(GazeData)

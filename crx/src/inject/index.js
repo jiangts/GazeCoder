@@ -119,9 +119,11 @@ function PlotGaze(GazeData, document, offset, scroller) {
       deepgaze.style.top = y - rect.y + offset.y + 'px'
       $(gaze).hide()
       $(deepgaze).show()
+      if(!gazeOn) $('.gaze-bbl').hide()
     } else {
       $(gaze).show()
       $(deepgaze).hide()
+      if(!gazeOn) $('.gaze-bbl').hide()
     }
   }
 
@@ -149,6 +151,7 @@ function PlotGaze(GazeData, document, offset, scroller) {
 
 }
 
+var gazeOn = true
 function PlotMouse(MouseData, document, offset, scroller) {
   var { x, y } = MouseData
   x -= 4 // image offset
@@ -390,9 +393,11 @@ if(!window[INJECTED]) {
         $('#esy-thumbnail').hide()
       }
       if(data === 'gaze on') {
+        gazeOn = true
         $('.gaze-bbl').show()
       }
       if(data === 'gaze off') {
+        gazeOn = false
         $('.gaze-bbl').hide()
       }
       else if(data.type === 'emit') {

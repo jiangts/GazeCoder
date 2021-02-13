@@ -42,9 +42,10 @@ function deepnoteProcessGaze(GazeData, config={}) {
     GazeData.rect = getRect(scroller)
     GazeData.offset = { x: scroller.scrollLeft, y: scroller.scrollTop }
     markCells(scroller)
-    if(el.matches('div[data-cy="cell"]')) {
-      GazeData.roi = el.getAttribute('data-esy-id')
-      console.log(GazeData.roi)
+    const cell = el.closest('div[data-cy="cell"]')
+    if(cell) {
+      GazeData.roi = cell.getAttribute('data-esy-id')
+      // console.log(GazeData.roi)
     }
   }
   return GazeData
@@ -60,10 +61,10 @@ function deepnoteProcessMouse(event, config={}) {
     MouseData.rect = getRect(scroller)
     MouseData.offset = { x: scroller.scrollLeft, y: scroller.scrollTop }
     markCells(scroller)
-    const el = event.target
-    if(el.matches('div[data-cy="cell"]')) {
-      GazeData.roi = el.getAttribute('data-esy-id')
-      console.log(GazeData.roi)
+    const cell = event.target.closest('div[data-cy="cell"]')
+    if(cell) {
+      MouseData.roi = cell.getAttribute('data-esy-id')
+      // console.log(MouseData.roi)
     }
   }
   return MouseData

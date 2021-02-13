@@ -157,7 +157,7 @@ function PlotMouse(MouseData, document, offset, scroller) {
   var mouse = document.getElementById(id);
   const url = DOMAIN + '/images/iconmonstr-cursor-32-green.svg'
   if(!mouse) {
-    var $mouse = $(`<img id="${id}" src="${url}" style ="position: absolute; z-index: 1000000000; pointer-events: none; height: 20px; width: 20px;"></img>`)
+    var $mouse = $(`<img class="esy-mouse" id="${id}" src="${url}" style ="position: absolute; z-index: 1000000000; pointer-events: none; height: 20px; width: 20px;"></img>`)
     mouse = $mouse.get(0)
     document.body.appendChild(mouse)
   }
@@ -375,9 +375,11 @@ if(!window[INJECTED]) {
       }
       if(data === 'cursor on') {
         addEventListener('mousemove', processMouse)
+        $('.esy-mouse').show()
       }
       if(data === 'cursor off') {
         removeEventListener('mousemove', processMouse)
+        $('.esy-mouse').hide()
       }
       if(data === 'minimap on') {
         minimapOn = true

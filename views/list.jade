@@ -1,0 +1,14 @@
+extends layout
+
+block content
+  p= warnMsg
+  each file in logfiles
+    li
+      a(href="#{file.href}") #{file.name}
+      &nbsp;&nbsp;&nbsp;&nbsp;
+      &nbsp;&nbsp;&nbsp;&nbsp;
+      &nbsp;&nbsp;&nbsp;&nbsp;
+      &nbsp;&nbsp;&nbsp;&nbsp;
+      &nbsp;&nbsp;&nbsp;&nbsp;
+      a(href="#{file.deleteHref}") Delete this file
+

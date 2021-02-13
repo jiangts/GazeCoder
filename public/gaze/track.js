@@ -197,8 +197,9 @@ $(function() {
   })
   $('form#room').submit(e => {
     e.preventDefault()
-    const val = $(e.target).find('input').val()
-    messageParent({ type: 'emit', args: ['join room', val] })
+    const val = $(e.target).find('input[name="room-id"]').val()
+    const name = $(e.target).find('input[name="name"]').val()
+    messageParent({ type: 'emit', args: ['join room', val, name] })
     $('.step.s-2').show()
   })
 })

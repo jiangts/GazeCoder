@@ -25,7 +25,7 @@ module.exports = (io, app) => {
   io.on('connection', (socket) => {
     console.log('a user connected');
 
-    socket.on('join room', room => {
+    socket.on('join room', (room, name) => {
       if (socket.room) {
         socket.leave(socket.room)
       }
@@ -35,8 +35,9 @@ module.exports = (io, app) => {
       if(!loggers[room]) {
         const logger = makeLogger(room+'.jsonl')
         _.set(loggers, [room, 'logger'].join('.'), logger)
-        _.set(loggers, [room, 'log'].join('.'), _.throttle((...args) => logger.info(...args), 333))
+        _.set(loggers, [room, 'log'].join('.'), _.throttle((...args) => logger.info(...args), 200))
       }
+      loggers[room].log({ event: 'identify', data: { name, sid: socket.id } })
     })
 
     socket.on('disconnect', () => {

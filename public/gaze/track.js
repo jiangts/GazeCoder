@@ -204,7 +204,6 @@ $(function() {
     const val = $(e.target).find('input[name="room-id"]').val()
     const name = $(e.target).find('input[name="name"]').val()
     messageParent({ type: 'emit', args: ['join room', val, name] })
-    console.log('hihihi', { type: 'emit', args: ['join room', val, name] })
     $('.step.s-2').show()
   })
 })

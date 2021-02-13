@@ -2,18 +2,25 @@ var _ = require('lodash')
 const winston = require('winston');
 const path = require('path');
 const {transports, createLogger, format} = require('winston');
+var fs = require('fs-extra')
 
 const makeLogger = filename => {
   filename = path.join(__dirname, 'public/logs', filename)
-  const logger = createLogger({
-    format: format.combine(
-      format.timestamp(),
-      format.json()
-    ),
-    transports: [
-      new transports.File({filename})
-    ]
-  });
+  const logger = {
+    log: data => {
+      data.t = Date.now()
+      fs.appendFile(filename, JSON.stringify(data) + '\n')
+    }
+  }
+  // const logger = createLogger({
+  //   format: format.combine(
+  //     format.timestamp(),
+  //     format.json()
+  //   ),
+  //   transports: [
+  //     new transports.File({filename})
+  //   ]
+  // });
   return logger
 }
 
@@ -35,7 +42,7 @@ module.exports = (io, app) => {
       if(!loggers[room]) {
         const logger = makeLogger(room+'.jsonl')
         _.set(loggers, [room, 'logger'].join('.'), logger)
-        _.set(loggers, [room, 'log'].join('.'), _.throttle((...args) => logger.info(...args), 200))
+        _.set(loggers, [room, 'log'].join('.'), _.throttle((...args) => logger.log(...args), 200))
       }
       loggers[room].log({ event: 'identify', data: { name, sid: socket.id } })
     })

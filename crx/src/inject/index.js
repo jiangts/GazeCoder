@@ -69,6 +69,7 @@ function deepnoteProcessMouse(event, config={}) {
   return MouseData
 }
 
+var gazeOn = true
 function PlotGaze(GazeData, document, offset, scroller) {
 
   /*
@@ -119,11 +120,9 @@ function PlotGaze(GazeData, document, offset, scroller) {
       deepgaze.style.top = y - rect.y + offset.y + 'px'
       $(gaze).hide()
       $(deepgaze).show()
-      if(!gazeOn) $('.gaze-bbl').hide()
     } else {
       $(gaze).show()
       $(deepgaze).hide()
-      if(!gazeOn) $('.gaze-bbl').hide()
     }
   }
 
@@ -149,9 +148,10 @@ function PlotGaze(GazeData, document, offset, scroller) {
     }
   }
 
+  if(!gazeOn) $('.gaze-bbl').hide()
 }
 
-var gazeOn = true
+var mouseOn = true
 function PlotMouse(MouseData, document, offset, scroller) {
   var { x, y } = MouseData
   x -= 4 // image offset
@@ -175,7 +175,7 @@ function PlotMouse(MouseData, document, offset, scroller) {
     // deep note specific
     var deepmouse = document.getElementById('deep' + id);
     if(!deepmouse && scroller) {
-      var $mouse = $(`<img id="${'deep' + id}" src="${url}" style ="position: absolute; z-index: 1000000000; pointer-events: none; height: 20px; width: 20px;"></img>`)
+      var $mouse = $(`<img class="esy-mouse" id="${'deep' + id}" src="${url}" style ="position: absolute; z-index: 1000000000; pointer-events: none; height: 20px; width: 20px;"></img>`)
       deepmouse = $mouse.get(0)
       scroller.appendChild(deepmouse)
     }
@@ -191,6 +191,7 @@ function PlotMouse(MouseData, document, offset, scroller) {
     }
   }
 
+  if(!mouseOn) $('.esy-mouse').hide()
 }
 
 
@@ -378,10 +379,12 @@ if(!window[INJECTED]) {
       }
       if(data === 'cursor on') {
         addEventListener('mousemove', processMouse)
+        mouseOn = true
         $('.esy-mouse').show()
       }
       if(data === 'cursor off') {
         removeEventListener('mousemove', processMouse)
+        mouseOn = false
         $('.esy-mouse').hide()
       }
       if(data === 'minimap on') {

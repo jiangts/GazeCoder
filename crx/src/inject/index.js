@@ -410,6 +410,7 @@ if(!window[INJECTED]) {
             scroller: scrollNode
           }))
         } else {
+          console.log("HI", data.args)
           socket.emit(...data.args)
         }
       }

@@ -85,16 +85,16 @@ function TimeBuffer(ms) {
 
 TimeBuffer.prototype.push = function(item) {
   var t = Date.now()
+  this.lastms = t
   this.state.push({ t, item })
   return item
 }
 
 TimeBuffer.prototype.getState = function() {
-  var last = this.state[this.state.length - 1]
   var ms = this.ms
 
   this.state = this.state.filter(function(p) {
-    return p.t >= last.t - ms
+    return p.t >= this.lastms - ms
   })
   return this.state.map(p => p.item)
 }
@@ -105,16 +105,22 @@ let smoothsetting = true
 let minimapsetting = true
 let gazesetting = true
 let smoothsize = 15 // about 15 samples / sec
-let xbuf = new DroppingBuffer(smoothsize)
-let ybuf = new DroppingBuffer(smoothsize)
+// let xbuf = new DroppingBuffer(smoothsize)
+// let ybuf = new DroppingBuffer(smoothsize)
+
+let xbuf = new TimeBuffer(1000)
+let ybuf = new TimeBuffer(1000)
 
 $(function() {
   var $surface = $('div.calibrate')
   $surface.append('<button class="bufsize">bufsize</button>')
   $surface.find('button.bufsize').click(() => {
     smoothsize = parseInt(prompt("input whole number for smoothing buffer size"))
-    xbuf = new DroppingBuffer(smoothsize)
-    ybuf = new DroppingBuffer(smoothsize)
+    // xbuf = new DroppingBuffer(smoothsize)
+    // ybuf = new DroppingBuffer(smoothsize)
+
+    xbuf = new TimeBuffer(1000)
+    ybuf = new TimeBuffer(1000)
   })
 })
 

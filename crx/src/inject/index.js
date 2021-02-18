@@ -44,7 +44,14 @@ function deepnoteProcessGaze(GazeData, config={}) {
     markCells(scroller)
     const cell = el.closest('div[data-cy="cell"]')
     if(cell) {
-      GazeData.roi = cell.getAttribute('data-esy-id')
+      GazeData.roi = {
+        id: cell.getAttribute('data-esy-id')
+      }
+      const now = Date.now()
+      if(_.get(cell, 'lastRect', 0) < now - 3000) {
+        GazeData.roi.rect = cell.getBoundingClientRect()
+        cell.lastRect = now
+      }
       // console.log(GazeData.roi)
     }
   }
@@ -63,7 +70,14 @@ function deepnoteProcessMouse(event, config={}) {
     markCells(scroller)
     const cell = event.target.closest('div[data-cy="cell"]')
     if(cell) {
-      MouseData.roi = cell.getAttribute('data-esy-id')
+      MouseData.roi = {
+        id: cell.getAttribute('data-esy-id')
+      }
+      const now = Date.now()
+      if(_.get(cell, 'lastRect', 0) < now - 3000) {
+        MouseData.roi.rect = cell.getBoundingClientRect()
+        cell.lastRect = now
+      }
       // console.log(MouseData.roi)
     }
   }

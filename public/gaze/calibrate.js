@@ -24,7 +24,7 @@ $(function() {
       }).appendTo($surface)
   })
   const placeBlock = (css) => {
-    $('<div class="gaze-target"></div>')
+    return $('<div class="gaze-target"></div>')
       .css({
         ...css,
         height: 50,
@@ -33,7 +33,8 @@ $(function() {
       }).appendTo($surface)
   }
   // center block
-  placeBlock({ margin: 'auto', 'margin-top': '40vh', })
+  const $centerBlock = placeBlock({ margin: 'auto', 'margin-top': '40vh', })
+  console.log($centerBlock)
 
   // random blocks
   placeBlock({ position: 'fixed', 'left': '20vw', 'top': '80vh', })

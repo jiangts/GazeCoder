@@ -113,6 +113,7 @@ let ybuf = new DroppingBuffer(smoothsize)
 
 $(function() {
   var $surface = $('div.calibrate')
+  /*
   $surface.append('<button class="bufsize">bufsize</button>')
   $surface.find('button.bufsize').click(() => {
     smoothsize = parseInt(prompt("input whole number for smoothing buffer size"))
@@ -121,6 +122,23 @@ $(function() {
 
     // xbuf = new TimeBuffer(1000)
     // ybuf = new TimeBuffer(1000)
+  })
+  */
+  $surface.append('<button class="acc">Check calibration</button>')
+  $surface.find('button.acc').click(() => {
+    const duration = 10
+    alert(`please look at the green square in the center for ${duration} seconds`)
+    const $centerblock = $surface.find('.center-block')
+    $centerblock.css({ 'background-color': 'green' })
+    messageParent({ type: 'emit', args: ['gaze', { calibration: 'start', position: $centerblock.get(0).getBoundingClientRect() }] })
+    setTimeout(() => {
+      messageParent({ type: 'emit', args: ['gaze', { calibration: 'end' }] })
+      $centerblock.css({ 'background-color': 'red' })
+      messageParent({ type: 'emit', args: ['gaze', { calibration: 'end' }] })
+      setTimeout(() => {
+        alert(`Thank you!`)
+      }, 500)
+    }, duration*1000)
   })
 })
 

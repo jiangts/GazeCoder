@@ -132,7 +132,6 @@ $(function() {
     $centerblock.css({ 'background-color': 'green' })
     messageParent({ type: 'emit', args: ['gaze', { calibration: 'start', position: $centerblock.get(0).getBoundingClientRect() }] })
     setTimeout(() => {
-      messageParent({ type: 'emit', args: ['gaze', { calibration: 'end' }] })
       $centerblock.css({ 'background-color': 'red' })
       messageParent({ type: 'emit', args: ['gaze', { calibration: 'end' }] })
       setTimeout(() => {

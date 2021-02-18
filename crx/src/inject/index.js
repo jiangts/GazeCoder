@@ -32,6 +32,7 @@ var markCells = scroller => {
 }
 var getRect = _.memoize(el => el.getBoundingClientRect())
 function deepnoteProcessGaze(GazeData, config={}) {
+  if(GazeData.calibration) return GazeData
   const { scroller } = config
 
   var x = GazeData.docX;

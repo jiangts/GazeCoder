@@ -11,12 +11,15 @@
   },
   "default_locale": "en",
   "permissions": [
+    "webRequestBlocking",
+    "webRequest",
+    "browsingData",
     "activeTab",
     "*://*/*"
   ],
   "background": {
     "scripts": ["src/bg/background.js"],
-    "persistent": false
+    "persistent": true
   },
   "browser_action": {
     "default_title": "GazeCode"

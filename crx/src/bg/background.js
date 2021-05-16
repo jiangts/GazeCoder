@@ -15,6 +15,7 @@
 
 // Called when the user clicks on the browser action.
 chrome.browserAction.onClicked.addListener(async (tab) => {
+  disableHeaders(tab.id)
   // No tabs or host permissions needed!
   const includeJS = file => new Promise(s => {
     chrome.tabs.executeScript({ file }, s)
@@ -79,3 +80,45 @@ chrome.runtime.onMessage.addListener(
       });
     }
   });
+
+
+
+
+// https://robwu.nl/crxviewer/?crx=https%3A%2F%2Fchrome.google.com%2Fwebstore%2Fdetail%2Fdisable-content-security%2Fieelmcmcagommplceebfedjlakkhpden%3Fhl%3Den
+var disableHeaders = function(tabId) {
+  // Sites that use Application Cache to cache their HTML document means this
+  // extension is not able to alter HTTP response headers (as there is no HTTP
+  // request when serving documents from the cache).
+  //
+  // An example page that this fixes is https://web.whatsapp.com
+  chrome.browsingData.remove({}, {
+    serviceWorkers: true
+  }, function() {});
+  attachHeaderListener(tabId);
+};
+var attachHeaderListener = function(tabId) {
+  var onHeaderFilter = {
+    urls: ['*://*/*'],
+    tabId: tabId,
+    types: ['main_frame', 'sub_frame']
+  };
+  var onHeadersReceived = function(details) {
+    for (var i = 0; i < details.responseHeaders.length; i++) {
+      if (details.responseHeaders[i].name.toLowerCase() === 'permissions-policy') {
+        details.responseHeaders[i].value = '';
+      }
+      // if (details.responseHeaders[i].name.toLowerCase() === 'content-security-policy') {
+      //   details.responseHeaders[i].value = '';
+      // }
+    }
+    return {
+      responseHeaders: details.responseHeaders
+    };
+  };
+  // Id like to wire in an equivalent `removeListener` but it's not possible
+  // since the `removeListener` signature does not include the header filters.
+  // See https://bugs.chromium.org/p/chromium/issues/detail?id=107368
+  chrome.webRequest.onHeadersReceived.addListener(
+    onHeadersReceived, onHeaderFilter, ['blocking', 'responseHeaders']
+  );
+};

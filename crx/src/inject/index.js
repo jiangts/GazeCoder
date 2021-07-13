@@ -3,6 +3,7 @@ var DOMAIN = '//gazecode.ml'
 
 var INJECTED = '__GAZECODER__'
 var FRAMEID = 'gazecoder-frame'
+var THUMBFRAMEID = 'gazecoder-thumbnail-frame'
 
 /*
 var scrollParent = $0
@@ -126,7 +127,7 @@ function PlotGaze(GazeData, document, offset, scroller) {
     // deep note specific
     var deepgaze = document.getElementById('deep' + id);
     if(!deepgaze && scroller) {
-      var $gaze = $(`<div class='gaze-bbl' id="${'deep' + id}" style ='position: absolute;display:none;width: 100px;height: 100px;border-radius: 50%;border: solid 2px  rgba(255, 255,255, .2);	box-shadow: 0 0 100px 3px rgba(125, 125,125, .5);	pointer-events: none;	z-index: 999999'></div>`)
+      var $gaze = $(`<div class='gaze-bbl' data-esy-ui id="${'deep' + id}" style ='position: absolute;display:none;width: 100px;height: 100px;border-radius: 50%;border: solid 2px  rgba(255, 255,255, .2);	box-shadow: 0 0 100px 3px rgba(125, 125,125, .5);	pointer-events: none;	z-index: 999999'></div>`)
       deepgaze = $gaze.get(0)
       scroller.appendChild(deepgaze)
     }
@@ -191,7 +192,7 @@ function PlotMouse(MouseData, document, offset, scroller) {
     // deep note specific
     var deepmouse = document.getElementById('deep' + id);
     if(!deepmouse && scroller) {
-      var $mouse = $(`<img class="esy-mouse" id="${'deep' + id}" src="${url}" style ="position: absolute; z-index: 1000000000; pointer-events: none; height: 20px; width: 20px;"></img>`)
+      var $mouse = $(`<img class="esy-mouse" data-esy-ui id="${'deep' + id}" src="${url}" style ="position: absolute; z-index: 1000000000; pointer-events: none; height: 20px; width: 20px;"></img>`)
       deepmouse = $mouse.get(0)
       scroller.appendChild(deepmouse)
     }
@@ -218,11 +219,11 @@ function pageSummary(config={}) {
     scrollNode = document.querySelector(scrollSel)
   }
 
-  var iframe = document.querySelector('iframe#esy-thumbnail')
+  var iframe = document.querySelector('iframe#' + THUMBFRAMEID)
   var clone
   if(!iframe) {
     iframe = document.createElement('iframe')
-    iframe.id = 'esy-thumbnail'
+    iframe.id = THUMBFRAMEID
   }
 
   // https://stackoverflow.com/questions/1145850/how-to-get-height-of-entire-document-with-javascript
@@ -263,13 +264,67 @@ function pageSummary(config={}) {
     })
   }
 
+  var getStyleNodes = (doc=document) => {
+    const css = doc.styleSheets
+    const links = []
+    const rules = [].concat(...[...css].map(s => {
+      try {
+        return [...s.cssRules||[]]
+      } catch (error) {
+        links.push(s)
+        return []
+      }
+    }))
+    const style = document.createElement('style')
+    style.innerHTML = rules.map(r => r.cssText).join('\n')
+    return {
+      style,
+      links: links.map(r => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.setAttribute('data-esy', '1')
+        link.href = r.href
+        return link
+      })
+    }
+  }
+
+  // https://stackoverflow.com/questions/2952667/find-all-css-rules-that-apply-to-an-element
+  var getMatchedCSSRules = (el, css = el.ownerDocument.styleSheets) =>
+    [].concat(...[...css].map(s => [...s.cssRules||[]])) /* 1 */
+    .filter(r => el.matches(r.selectorText));            /* 2 */
+
+
+  const insertAtIndex = (parentElement, newElement, index) => {
+    parentElement.insertBefore(newElement, parentElement.children[index]);
+  }
+
+  const { style, links } = getStyleNodes()
+  clone.head.appendChild(style)
+  links.forEach(link => {
+    clone.head.appendChild(link)
+  })
+
+
   if(iframe.loaded) {
 
-    var html = clone.body.innerHTML
+    // var html = clone.body.innerHTML
     // if(html !== iframe.contentDocument.body.innerHTML) {
-    // if () {
     //   iframe.contentDocument.body.innerHTML = html
+    //   console.log('same', html === iframe.contentDocument.body.innerHTML)
     // }
+    const refreshView = (sel, keepSel) => {
+      const html = clone.querySelector(sel).innerHTML
+      const frameEl = iframe.contentDocument.querySelector(sel)
+      const keepers = frameEl.querySelectorAll(keepSel)
+      if(html !== frameEl.innerHTML) {
+        frameEl.innerHTML = html
+        keepers.forEach(k => {
+          frameEl.appendChild(k)
+        })
+      }
+    }
+    refreshView(scrollSel, '[data-esy-ui]')
 
   } else {
 
@@ -285,7 +340,10 @@ function pageSummary(config={}) {
       iframe.loaded = true
     }
 
-    document.body.appendChild(iframe)
+    // IFRAME
+    // document.body.appendChild(iframe)
+    document.documentElement.appendChild(iframe)
+    // document.querySelector('#content-root').appendChild(iframe)
   }
 
   // setInterval(() => {
@@ -302,7 +360,7 @@ function pageSummary(config={}) {
 function renderViewport ({scrollSel, id, color}) {
   return ({x, y, h, w}) => {
 
-    var iframe2 = document.querySelector('iframe#esy-thumbnail')
+    var iframe2 = document.querySelector('iframe#' + THUMBFRAMEID)
     var doc = iframe2.contentDocument
     var scrollWin = doc.getElementById(id)
 
@@ -315,6 +373,7 @@ function renderViewport ({scrollSel, id, color}) {
       scrollWin = document.createElement('div')
       scrollWin.id = id
       scrollWin.setAttribute('style', `position: absolute;z-index: 1000000000;border: 10px solid ${color};`)
+      scrollWin.setAttribute('data-esy-ui', true)
       // doc.body.append(scrollWin)
       scrollNode.append(scrollWin)
     }
@@ -350,7 +409,7 @@ if(!window[INJECTED]) {
     socket.on('gaze', data => {
       PlotGaze(data, document, false, scrollNode)
       if(!iframe2) {
-        iframe2 = document.querySelector('iframe#esy-thumbnail')
+        iframe2 = document.querySelector('iframe#' + THUMBFRAMEID)
       }
       PlotGaze(data, iframe2.contentDocument, true)
     })
@@ -358,7 +417,7 @@ if(!window[INJECTED]) {
     socket.on('mouse', data => {
       PlotMouse(data, document, false, scrollNode)
       if(!iframe2) {
-        iframe2 = document.querySelector('iframe#esy-thumbnail')
+        iframe2 = document.querySelector('iframe#' + THUMBFRAMEID)
       }
       PlotMouse(data, iframe2.contentDocument, true)
     })
@@ -377,7 +436,9 @@ if(!window[INJECTED]) {
       left: 0px;
       border: none;`)
     iframe.setAttribute('allow', 'camera;fullscreen')
+    // IFRAME
     document.body.appendChild(iframe)
+    // document.documentElement.appendChild(iframe)
     iframe.src = DOMAIN + '/gaze/track.html'
 
     const processMouse = event => {
@@ -405,11 +466,11 @@ if(!window[INJECTED]) {
       }
       if(data === 'minimap on') {
         minimapOn = true
-        $('#esy-thumbnail').show()
+        $('iframe#' + THUMBFRAMEID).show()
       }
       if(data === 'minimap off') {
         minimapOn = false
-        $('#esy-thumbnail').hide()
+        $('iframe#' + THUMBFRAMEID).hide()
       }
       if(data === 'gaze on') {
         gazeOn = true
@@ -432,10 +493,13 @@ if(!window[INJECTED]) {
     })
 
     // deep note specific
-    var scrollSel = `[data-cy='upload-droparea'] > :last-child`
+    var scrollSel = '#notebook-view' // `[data-cy='upload-droparea'] > :last-child`
     var scrollNode = document.querySelector(scrollSel)
     var scrollWinSel = 'div.esy-scroller'
-    setInterval(() => minimapOn && pageSummary({ scrollSel, stripTags: ['iframe', scrollWinSel] }), 1000)
+    setInterval(() => minimapOn && pageSummary({
+      scrollSel,
+      stripTags: ['iframe', scrollWinSel, /*'script[src*="main.bundle"]'*/, 'script']
+    }), 1000)
     scrollNode.addEventListener('scroll', e => {
       t = e.target
       var w = window.innerWidth

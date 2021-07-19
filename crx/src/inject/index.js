@@ -127,7 +127,7 @@ function PlotGaze(GazeData, document, offset, scroller) {
     // deep note specific
     var deepgaze = document.getElementById('deep' + id);
     if(!deepgaze && scroller) {
-      var $gaze = $(`<div class='gaze-bbl' data-esy-ui id="${'deep' + id}" style ='position: absolute;display:none;width: 100px;height: 100px;border-radius: 50%;border: solid 2px  rgba(255, 255,255, .2);	box-shadow: 0 0 100px 3px rgba(125, 125,125, .5);	pointer-events: none;	z-index: 999999'></div>`)
+      var $gaze = $(`<div class='gaze-bbl' id="${'deep' + id}" style ='position: absolute;display:none;width: 100px;height: 100px;border-radius: 50%;border: solid 2px  rgba(255, 255,255, .2);	box-shadow: 0 0 100px 3px rgba(125, 125,125, .5);	pointer-events: none;	z-index: 999999'></div>`)
       deepgaze = $gaze.get(0)
       scroller.appendChild(deepgaze)
     }
@@ -192,7 +192,7 @@ function PlotMouse(MouseData, document, offset, scroller) {
     // deep note specific
     var deepmouse = document.getElementById('deep' + id);
     if(!deepmouse && scroller) {
-      var $mouse = $(`<img class="esy-mouse" data-esy-ui id="${'deep' + id}" src="${url}" style ="position: absolute; z-index: 1000000000; pointer-events: none; height: 20px; width: 20px;"></img>`)
+      var $mouse = $(`<img class="esy-mouse" id="${'deep' + id}" src="${url}" style ="position: absolute; z-index: 1000000000; pointer-events: none; height: 20px; width: 20px;"></img>`)
       deepmouse = $mouse.get(0)
       scroller.appendChild(deepmouse)
     }

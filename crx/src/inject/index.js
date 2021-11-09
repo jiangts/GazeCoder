@@ -493,7 +493,7 @@ if(!window[INJECTED]) {
     })
 
     // deep note specific
-    var scrollSel = '#notebook-view' // `[data-cy='upload-droparea'] > :last-child`
+    var scrollSel = '#scroll-container' // `[data-cy='upload-droparea'] > :last-child`
     var scrollNode = document.querySelector(scrollSel)
     var scrollWinSel = 'div.esy-scroller'
     setInterval(() => minimapOn && pageSummary({

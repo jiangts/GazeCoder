@@ -1,5 +1,5 @@
 // var DOMAIN = 'http://localhost:3000'
-var DOMAIN = '//gazecode.tk'
+var DOMAIN = '//gazecode.ml'
 
 var INJECTED = '__GAZECODER__'
 var FRAMEID = 'gazecoder-frame'
